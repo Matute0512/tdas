@@ -28,7 +28,7 @@ public interface Map<K,V>
 	 * @return Valor de la entrada encontrada.
 	 * @throws InvalidKeyException si la clave pasada por parámetro es inválida.
 	 */
-	public V get(K key) throws InvalidKeyException;
+	public V get(K key);
 	
 	/**
 	 * Si el mapeo no tiene una entrada con clave key, inserta una entrada con clave key y valor value en el mapeo y devuelve null. 
@@ -38,7 +38,7 @@ public interface Map<K,V>
 	 * @return Valor de la vieja entrada.
 	 * @throws InvalidKeyException si la clave pasada por parámetro es inválida.
 	 */
-	public V put(K key, V value) throws InvalidKeyException;
+	public V put(K key, V value);
 	
 	/**
 	 * Remueve la entrada con la clave dada en el mapeo y devuelve su valor, o nulo si no fue encontrada.
@@ -46,7 +46,7 @@ public interface Map<K,V>
 	 * @return Valor de la entrada removida.
 	 * @throws InvalidKeyException si la clave pasada por parámetro es inválida.
 	 */
-	public V remove(K key) throws InvalidKeyException;
+	public V remove(K key);
 	
 	/**
 	 * Retorna una colección iterable con todas las claves del mapeo.

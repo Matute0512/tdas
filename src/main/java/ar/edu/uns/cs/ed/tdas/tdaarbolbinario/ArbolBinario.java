@@ -3,15 +3,16 @@ package ar.edu.uns.cs.ed.tdas.tdaarbolbinario;
 import java.util.Iterator;
 
 import ar.edu.uns.cs.ed.tdas.Position;
+import ar.edu.uns.cs.ed.tdas.excepciones.BoundaryViolationException;
 import ar.edu.uns.cs.ed.tdas.excepciones.InvalidPositionException;
 
 public class ArbolBinario <E> implements BinaryTree<E> {
 
-    private BTNode<E> raiz;
+    private BTNode<E> root;
     private int cant;
 
     public ArbolBinario(){
-        raiz = null;
+        root = null;
         cant = 0;
     }
 
@@ -27,8 +28,7 @@ public class ArbolBinario <E> implements BinaryTree<E> {
 
     @Override
     public Iterator<E> iterator() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'iterator'");
+       return iterator();
     }
 
     @Override
@@ -129,36 +129,70 @@ public class ArbolBinario <E> implements BinaryTree<E> {
 
     @Override
     public Position<E> left(Position<E> v) {
-        return null;
+        BTNode<E> nodo = checkPosition(v);
+        if (nodo.getHIzquierdo() == null) {
+            throw new BoundaryViolationException("El nodo no tiene hijo izquierdo.");
+        }
+        return nodo.getHIzquierdo(); 
     }
 
     @Override
     public Position<E> right(Position<E> v) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'right'");
+        BTNode<E> nodo = checkPosition(v);
+        if (nodo.getHDerecho() == null) {
+            throw new BoundaryViolationException("El nodo no tiene hijo derecho.");
+        }
+        return nodo.getHDerecho();
     }
 
     @Override
     public boolean hasLeft(Position<E> v) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'hasLeft'");
+        boolean resultado = false;
+        BTNode<E> nodo = checkPosition(v);
+        if(nodo.getHIzquierdo() != null) {
+            resultado = true;
+        }
+        return resultado;
     }
 
     @Override
     public boolean hasRight(Position<E> v) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'hasRight'");
+        boolean resultado = false;
+        BTNode<E> nodo = checkPosition(v);
+        if(nodo.getHDerecho() != null) {
+            resultado = true;
+        }
+        return resultado;
     }
 
     @Override
     public Position<E> addLeft(Position<E> v, E r) {
-        BTNode<E> nodo = checkPosition(p);
+        BTNode<E> nodo = checkPosition(v);
+        
+        if(root == null) {
+            throw new InvalidPositionException("El árbol está vacío.");
+        }
+        if(nodo.getHIzquierdo() != null) {
+            throw new InvalidPositionException("El nodo ya tiene un hijo izquierdo.");
+        }
+        BTNode<E> resultado = new BTNode<>(r, null,nodo.getHDerecho(),nodo);
+        cant++;
+        return resultado;
     }
 
     @Override
     public Position<E> addRight(Position<E> v, E r) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addRight'");
+        BTNode<E> nodo = checkPosition(v);
+        
+        if(root == null) {
+            throw new InvalidPositionException("El árbol está vacío.");
+        }
+        if(nodo.getHDerecho() != null) {
+            throw new InvalidPositionException("El nodo ya tiene un hijo derecho.");
+        }
+        BTNode<E> resultado = new BTNode<>(r, nodo.getHIzquierdo(), null, nodo);
+        cant++;
+        return resultado;
     }
 
     @Override
