@@ -4,6 +4,7 @@ import ar.edu.uns.cs.ed.tdas.excepciones.*;
 import java.util.Iterator;
 
 import ar.edu.uns.cs.ed.tdas.Entry;
+import ar.edu.uns.cs.ed.tdas.Position;
 import ar.edu.uns.cs.ed.tdas.tdalista.ListaDE;
 
 public class MapeoConHash<K,V> implements Map<K,V> {
@@ -85,15 +86,18 @@ public class MapeoConHash<K,V> implements Map<K,V> {
         }
         else{
             ListaDE<Entrada<K,V>>lista = arry[hash(key)];
-            Iterator<Entrada<K,V>> ite = lista.iterator();
+            Position<Entrada<K,V>> pos = lista.first();
             boolean encontrada = false;
-            while(ite.hasNext() && !encontrada){
-                Entrada<K,V> e = ite.next();
-                if(e.getKey() == key){
+
+            while (pos != null && !encontrada) {
+                Entrada<K,V> e = pos.element();
+                if (e.getKey().equals(key)) {
                     encontrada = true;
-                    resultado= e.getValue();
-                    ite.remove();
+                    resultado = e.getValue();
+                    lista.remove(pos);
                     cant--;
+                } else {
+                    pos = lista.next(pos);
                 }
             }
         }

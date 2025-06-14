@@ -1,6 +1,6 @@
 package ar.edu.uns.cs.ed.tdas.tdamapeo;
 
-import java.security.InvalidKeyException;
+import ar.edu.uns.cs.ed.tdas.excepciones.*;
 import java.util.Iterator;
 import ar.edu.uns.cs.ed.tdas.Entry;
 import ar.edu.uns.cs.ed.tdas.tdalista.ListaDE;
@@ -24,7 +24,7 @@ public class MapeoConLista<K,V> implements Map<K,V> {
     }
 
     @Override
-    public V get(K key) throws InvalidKeyException {
+    public V get(K key) {
         V resultado= null;
         if(key==null){
             throw new InvalidKeyException("La clave del get es nula");
@@ -44,7 +44,7 @@ public class MapeoConLista<K,V> implements Map<K,V> {
     }
 
     @Override
-    public V put(K key, V value) throws InvalidKeyException {
+    public V put(K key, V value) {
         V resultado= null;
         if(key==null){
             throw new InvalidKeyException("La clave del put es nula");
@@ -70,7 +70,7 @@ public class MapeoConLista<K,V> implements Map<K,V> {
     }
 
     @Override
-    public V remove(K key) throws InvalidKeyException{
+    public V remove(K key){
         V resultado= null;
         if(key==null){
             throw new InvalidKeyException("La clave del remove es nula");
