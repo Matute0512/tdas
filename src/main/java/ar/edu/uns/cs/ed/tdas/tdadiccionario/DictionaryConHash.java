@@ -36,15 +36,15 @@ public class DictionaryConHash <K,V> implements Dictionary<K,V> {
 
     @Override
     public Entry<K, V> find(K key) {
-        Entry<K,V> resultado=null;
+        Entrada<K,V> resultado=null;
         if (key == null){ 
             throw new InvalidKeyException("Clave inválida");
         }
         else{
             int index = hash(key);
             for (Entry<K, V> entry : mapeo[index]) {
-                if (entry.getKey()==(key)) {
-                    resultado= entry;
+                if (entry.getKey().equals(key)) {
+                    resultado= (Entrada<K,V>) entry;
                 }
             }
         }
@@ -59,8 +59,8 @@ public class DictionaryConHash <K,V> implements Dictionary<K,V> {
         }
         else{
         int index = hash(key);
-        for (Entrada<K,V> entry : mapeo[index]) {
-            if (entry.getKey()== key) {
+        for (Entry<K,V> entry : mapeo[index]) {
+            if (entry.getKey().equals(key)) {
                 resultado.addLast(entry);
             }
         }

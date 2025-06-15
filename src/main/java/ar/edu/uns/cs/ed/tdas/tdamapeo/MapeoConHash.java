@@ -63,7 +63,7 @@ public class MapeoConHash<K,V> implements Map<K,V> {
             boolean encontrada = false;
             while (ite.hasNext() && !encontrada){
                 Entrada<K,V> e = ite.next();
-                if(e.getKey()==key){
+                if(e.getKey().equals(key)){
                     encontrada = true;
                     resultado = e.getValue();
                     e.setValue(value);
@@ -86,19 +86,21 @@ public class MapeoConHash<K,V> implements Map<K,V> {
         }
         else{
             ListaDE<Entrada<K,V>>lista = arry[hash(key)];
-            Position<Entrada<K,V>> pos = lista.first();
+            Position<Entrada<K,V>> objetivo = null;
             boolean encontrada = false;
-
-            while (pos != null && !encontrada) {
-                Entrada<K,V> e = pos.element();
-                if (e.getKey().equals(key)) {
+            Iterator<Position<Entrada<K,V>>> ite = lista.positions().iterator();
+            while (ite.hasNext() && !encontrada) {
+                Position<Entrada<K,V>> pos = ite.next();
+                Entrada<K,V> entrada = pos.element();
+                if (entrada.getKey().equals(key)) {
                     encontrada = true;
-                    resultado = e.getValue();
-                    lista.remove(pos);
-                    cant--;
-                } else {
-                    pos = lista.next(pos);
+                    resultado = entrada.getValue();
+                    objetivo = pos;
                 }
+            }
+            if (encontrada){
+                lista.remove(objetivo);
+                cant--;
             }
         }
         return resultado;
