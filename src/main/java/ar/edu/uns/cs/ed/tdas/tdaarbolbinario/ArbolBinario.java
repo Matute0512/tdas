@@ -4,7 +4,11 @@ import java.util.Iterator;
 
 import ar.edu.uns.cs.ed.tdas.Position;
 import ar.edu.uns.cs.ed.tdas.excepciones.BoundaryViolationException;
+import ar.edu.uns.cs.ed.tdas.excepciones.EmptyTreeException;
+import ar.edu.uns.cs.ed.tdas.excepciones.InvalidOperationException;
 import ar.edu.uns.cs.ed.tdas.excepciones.InvalidPositionException;
+import ar.edu.uns.cs.ed.tdas.tdalista.ListaDE;
+import ar.edu.uns.cs.ed.tdas.tdalista.PositionList;
 
 public class ArbolBinario <E> implements BinaryTree<E> {
 
@@ -28,61 +32,101 @@ public class ArbolBinario <E> implements BinaryTree<E> {
 
     @Override
     public Iterator<E> iterator() {
-       return iterator();
+       PositionList<E> lista = new ListaDE<E>();
+       if(!isEmpty()){
+            preOrdenElementos(root,lista);
+       }
+       return lista.iterator();
+    }
+
+    private void preOrdenElementos(BTNode<E> nodo, PositionList<E> lista) {
+        lista.addLast(nodo.element());
+        if(nodo.getLeft()!= null){
+            preOrdenElementos(nodo.getLeft(), lista);
+        }
+        if(nodo.getRight()!= null){
+            preOrdenElementos(nodo.getRight(), lista);
+        }
     }
 
     @Override
     public Iterable<Position<E>> positions() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'positions'");
+        PositionList<Position<E>> lista = new ListaDE<>();
+        if(!isEmpty()){
+            preOrdenPosiciones(root,lista);
+        }
+        return lista;
+    }
+
+    private void preOrdenPosiciones(BTNode<E> nodo, PositionList<Position<E>> lista) {
+        lista.addLast(nodo);
+        if(nodo.getLeft() != null){
+            preOrdenPosiciones(nodo.getLeft(), lista);
+        }
+        if(nodo.getRight() != null){
+            preOrdenPosiciones(nodo.getRight(), lista);
+        }
     }
 
     @Override
     public E replace(Position<E> v, E e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'replace'");
+        BTNode<E> nuevo = checkPosition(v);
+        E resultado = nuevo.element();
+        nuevo.setElement(e);
+        return resultado; 
     }
 
     @Override
     public Position<E> root() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'root'");
+        if(isEmpty()){
+            throw new EmptyTreeException("Error: El arbol esta vacio");
+        }
+        return root;
     }
 
     @Override
     public Position<E> parent(Position<E> v) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parent'");
+        BTNode<E> nodo = checkPosition(v);
+        if(nodo.getParent() == null){
+            throw new BoundaryViolationException("Error: El nodo es la raiz(por lo tanto no tiene padre).");
+        } 
+        return nodo.getParent();
     }
 
     @Override
     public Iterable<Position<E>> children(Position<E> v) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'children'");
+        BTNode<E> nodo = checkPosition(v);
+        PositionList<Position<E>> lista = new ListaDE();
+        if(!isEmpty())
+            preOrdenPosiciones(nodo, lista);
+        return lista;
     }
 
     @Override
     public boolean isInternal(Position<E> v) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isInternal'");
+        BTNode<E> nodo = checkPosition(v);
+        return (nodo.getLeft() != null || nodo.getRight() != null);
     }
 
     @Override
     public boolean isExternal(Position<E> v) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isExternal'");
+        BTNode<E> nodo = checkPosition(v);
+        return (nodo.getLeft() == null && nodo.getRight() == null);
     }
 
     @Override
     public boolean isRoot(Position<E> v) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isRoot'");
+        BTNode<E> nodo = checkPosition(v);
+        return nodo == root;
     }
 
     @Override
     public void createRoot(E e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createRoot'");
+        if(root != null){
+            throw new InvalidOperationException("Error: El Arbol Binario ya posee una raiz.");
+        }
+        root = new BTNode<E>(e, null,null,null);
+        cant++;
     }
 
     @Override
@@ -130,26 +174,26 @@ public class ArbolBinario <E> implements BinaryTree<E> {
     @Override
     public Position<E> left(Position<E> v) {
         BTNode<E> nodo = checkPosition(v);
-        if (nodo.getHIzquierdo() == null) {
+        if (nodo.getLeft() == null) {
             throw new BoundaryViolationException("El nodo no tiene hijo izquierdo.");
         }
-        return nodo.getHIzquierdo(); 
+        return nodo.getLeft(); 
     }
 
     @Override
     public Position<E> right(Position<E> v) {
         BTNode<E> nodo = checkPosition(v);
-        if (nodo.getHDerecho() == null) {
+        if (nodo.getRight() == null) {
             throw new BoundaryViolationException("El nodo no tiene hijo derecho.");
         }
-        return nodo.getHDerecho();
+        return nodo.getRight();
     }
 
     @Override
     public boolean hasLeft(Position<E> v) {
         boolean resultado = false;
         BTNode<E> nodo = checkPosition(v);
-        if(nodo.getHIzquierdo() != null) {
+        if(nodo.getLeft() != null) {
             resultado = true;
         }
         return resultado;
@@ -159,7 +203,7 @@ public class ArbolBinario <E> implements BinaryTree<E> {
     public boolean hasRight(Position<E> v) {
         boolean resultado = false;
         BTNode<E> nodo = checkPosition(v);
-        if(nodo.getHDerecho() != null) {
+        if(nodo.getRight() != null) {
             resultado = true;
         }
         return resultado;
@@ -172,10 +216,11 @@ public class ArbolBinario <E> implements BinaryTree<E> {
         if(root == null) {
             throw new InvalidPositionException("El árbol está vacío.");
         }
-        if(nodo.getHIzquierdo() != null) {
+        if(nodo.getLeft() != null) {
             throw new InvalidPositionException("El nodo ya tiene un hijo izquierdo.");
         }
-        BTNode<E> resultado = new BTNode<>(r, null,nodo.getHDerecho(),nodo);
+        BTNode<E> resultado = new BTNode<>(r, null,null,nodo);
+        nodo.setLeft(resultado);
         cant++;
         return resultado;
     }
@@ -187,10 +232,11 @@ public class ArbolBinario <E> implements BinaryTree<E> {
         if(root == null) {
             throw new InvalidPositionException("El árbol está vacío.");
         }
-        if(nodo.getHDerecho() != null) {
+        if(nodo.getRight() != null) {
             throw new InvalidPositionException("El nodo ya tiene un hijo derecho.");
         }
-        BTNode<E> resultado = new BTNode<>(r, nodo.getHIzquierdo(), null, nodo);
+        BTNode<E> resultado = new BTNode<>(r, null, null, nodo);
+        nodo.setRight(resultado);
         cant++;
         return resultado;
     }
@@ -218,6 +264,5 @@ public class ArbolBinario <E> implements BinaryTree<E> {
 		}
 
 		return resultado;
-	}
-    
+    } 
 }
