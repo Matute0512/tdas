@@ -95,12 +95,14 @@ public class ArbolBinario <E> implements BinaryTree<E> {
 
     @Override
     public Iterable<Position<E>> children(Position<E> v) {
-        BTNode<E> nodo = checkPosition(v);
-        PositionList<Position<E>> lista = new ListaDE();
-        if(!isEmpty())
-            preOrdenPosiciones(nodo, lista);
-        return lista;
-    }
+    BTNode<E> nodo = checkPosition(v);
+    PositionList<Position<E>> lista = new ListaDE<>();
+
+    if (nodo.getLeft() != null) lista.addLast(nodo.getLeft());
+    if (nodo.getRight() != null) lista.addLast(nodo.getRight());
+
+    return lista;
+}
 
     @Override
     public boolean isInternal(Position<E> v) {
@@ -187,21 +189,86 @@ public class ArbolBinario <E> implements BinaryTree<E> {
 
     @Override
     public void removeExternalNode(Position<E> p) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeExternalNode'");
+        BTNode<E> nodo = checkPosition(p);
+        // Verificamos que el nodo sea externo (sin hijos)
+        if (isExternal(nodo)) {
+            BTNode<E> parent = nodo.getParent();
+            if (parent != null) {
+                // Si el nodo es el hijo izquierdo del padre
+                if (parent.getLeft() == nodo) {
+                    parent.setLeft(null);
+                }   
+                else { // Si el nodo es el hijo derecho del padre
+                    parent.setRight(null);
+                }
+                cant--;
+            }
+        } 
+        else {
+            throw new InvalidOperationException("Error: El nodo no es externo.");
+        }
     }
 
     @Override
     public void removeInternalNode(Position<E> p) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeInternalNode'");
+        BTNode<E> nodo = checkPosition(p);
+        if (!isInternal(nodo)) {
+            throw new InvalidOperationException("El nodo no es interno");
+        }
+        
+        // Caso especial: raíz con un solo hijo
+        if (nodo == root && (nodo.getLeft() == null || nodo.getRight() == null)) {
+            BTNode<E> hijo = (nodo.getLeft() != null) ? nodo.getLeft() : nodo.getRight();
+            root = hijo;
+            if (hijo != null) {
+                hijo.setParent(null);
+            }
+            cant--;
+            return;
+        }
+        
+        // Caso general: nodo interno no raíz
+        removeNode(nodo);
     }
-
     @Override
     public void removeNode(Position<E> p) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeNode'");
-    }
+         BTNode<E> nodo = checkPosition(p);
+        
+        if (nodo == root && (nodo.getLeft() != null && nodo.getRight() != null)) {
+            throw new InvalidPositionException("No se puede eliminar la raíz con dos hijos");
+        }
+        
+        BTNode<E> padre = nodo.getParent();
+        BTNode<E> hijoUnico = null;
+        
+        if (nodo.getLeft() != null && nodo.getRight() != null) {
+            throw new InvalidPositionException("No se puede eliminar nodo con dos hijos");
+        } else if (nodo.getLeft() != null) {
+            hijoUnico = nodo.getLeft();
+        } else if (nodo.getRight() != null) {
+            hijoUnico = nodo.getRight();
+        }
+        
+        if (padre == null) { // Es la raíz
+            root = hijoUnico;
+            if (hijoUnico != null) {
+                hijoUnico.setParent(null);
+            }
+        } else {
+            if (padre.getLeft() == nodo) {
+                padre.setLeft(hijoUnico);
+            } else {
+                padre.setRight(hijoUnico);
+            }
+            
+            if (hijoUnico != null) {
+                hijoUnico.setParent(padre);
+            }
+        }
+        
+        cant--;
+}
+
 
     @Override
     public Position<E> left(Position<E> v) {
@@ -267,10 +334,29 @@ public class ArbolBinario <E> implements BinaryTree<E> {
 
     @Override
     public void attach(Position<E> r, BinaryTree<E> T1, BinaryTree<E> T2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'attach'");
+        BTNode<E> nodo = checkPosition(r);
+    if (isInternal(nodo)) {
+        throw new InvalidPositionException("Error: El nodo no puede ser interno.");
     }
-
+    
+    // Adjuntamos T1
+    if (T1 != null && !T1.isEmpty()) {
+        // Asumimos que T1 tiene una raíz
+        BTNode<E> rootT1 = (BTNode<E>) T1.root();
+        nodo.setLeft(rootT1);
+        rootT1.setParent(nodo);
+        cant += T1.size();
+    }
+    
+    // Adjuntamos T2
+    if (T2 != null && !T2.isEmpty()) {
+        // Asumimos que T2 tiene una raíz
+        BTNode<E> rootT2 = (BTNode<E>) T2.root();
+        nodo.setRight(rootT2);
+        rootT2.setParent(nodo);
+        cant += T2.size();
+    }
+}
     private BTNode<E> checkPosition (Position<E> p) {
 		BTNode<E> resultado = null;
 		if (p == null) {

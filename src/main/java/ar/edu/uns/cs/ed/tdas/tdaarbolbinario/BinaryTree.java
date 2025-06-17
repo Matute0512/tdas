@@ -8,8 +8,7 @@ import ar.edu.uns.cs.ed.tdas.tdaarbol.Tree;
  * Extiende la interfaz Tree.
  * @author Cátedra de Estructuras de Datos, Departamento de Cs. e Ing. de la Computación, UNS.
  */
-public interface BinaryTree<E> extends Tree<E>
-{
+public interface BinaryTree<E> extends Tree<E>{
 	/**
 	 * Devuelve la posición del hijo izquierdo de v.
 	 * @param v Posición de un nodo.
