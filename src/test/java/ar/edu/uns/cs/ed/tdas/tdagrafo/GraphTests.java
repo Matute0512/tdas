@@ -38,7 +38,7 @@ public class GraphTests {
 	 */
 	@Before
 	public void setUp() {
-		graph = new ListaDeAdyacencias<Object, Object>(); // cambiar esta línea para probar
+		graph = null;//new ListaDeAdyacencias<Object, Object>(); // cambiar esta línea para probar
 												// distintas implementaciones
 		o1 = new Object();
 	}
