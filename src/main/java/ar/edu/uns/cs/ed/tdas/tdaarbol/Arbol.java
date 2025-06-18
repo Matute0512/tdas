@@ -172,15 +172,17 @@ public class Arbol<E> implements Tree<E> {
     @Override
     public void removeExternalNode(Position<E> p) {
         TNode<E> nodo = checkPosition(p);		
-		if(this.isInternal(nodo)) {throw new InvalidPositionException("El nodo no es externo");}
-		if(this.root == nodo) {
+		if(isInternal(nodo)) {
+            throw new InvalidPositionException("El nodo no es externo");
+        }
+		if(root == nodo) {
 			//el nodo externo es la raiz
-			this.root = null;
+			root = null;
 		    cant = 0;
 		} else {
 			Iterator<Position<TNode<E>>> ite = nodo.getPadre().getHijos().positions().iterator();
 			Position<TNode<E>> posBuscada = null;
-			while(ite.hasNext()&&posBuscada==null) {
+			while(ite.hasNext()&&posBuscada == null) {
 				Position<TNode<E>> pos = ite.next();
 				if(pos.element() == nodo ) {posBuscada = pos;}
 			}
@@ -251,7 +253,7 @@ public class Arbol<E> implements Tree<E> {
 		if( v == null) {
             throw new InvalidPositionException("Posicion es nula");
         }
-		if( this.isEmpty()) {
+		if( isEmpty()) {
             throw new InvalidPositionException("El árbol está vacío");
         }
 		try {
